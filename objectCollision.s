@@ -5,8 +5,8 @@ objectCollision:
 
 push	(r4-r10,lr)
 
-mov r1, #0b00000	
-//load values of mario_temp into respective registers
+mov r1, #0b00001
+//load values of mario into respective registers
 xLeft1  	.req 	r5			//left x coordinate for first object
 xRight1 	.req	r6			//right x coordinate for first object
 yDown1  	.req	r7			//Down y coordinate for first object
@@ -41,7 +41,11 @@ moveq r1, #0b00110
 cmp r4, #0b00111
 moveq r1, #0b00111
 
+cmp r4, #0b01000
+moveq r1, #0b01001
 
+cmp r4, #0b00111
+moveq r1, #0b00111
 //load values of object two into respective registers
 bl Grab
  
@@ -91,7 +95,8 @@ noCollDetected:
 
 next:
 	add r4, r4, #0b00001		//add 1 to object code
-	b loadObject
+	cmp r4, #0b01010
+	blt loadObject
 	
 exit:
 
