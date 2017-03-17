@@ -5,8 +5,7 @@ displayCheck:
 
 push {r4-r9, lr}
 
-//argument in r0, code for object to check if in range
-bl Grab
+
 x1 .req r0		//x of top left
 y1 .req r1		//y of top left
 
