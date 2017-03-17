@@ -3,7 +3,7 @@
 
 displayCheck:
 
-push {r4-r9, lr}
+push {r4-r10, lr}
 
 
 x1 .req r0		//x of top left
