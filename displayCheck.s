@@ -36,5 +36,5 @@ notAllowed:
 mov r0, #0			//return #0 if drawing is not allowed
 
 exit:
-pop (r4-r9, lr)
+pop (r4-r10, lr)
 bx lr
