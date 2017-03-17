@@ -10,7 +10,7 @@ mov r7, r3			//move coordinates
 
 bl displayCheck		
 cmp r0, #1			//check if object can be drawn
-bne notOnScreen	// if not, branch to notOnScreen
+bne notOnScreen			// if not, branch to notOnScreen
 
 ldr r4, =Screen_loc
 ldr r8, [r4], #4	//load left x of screen
