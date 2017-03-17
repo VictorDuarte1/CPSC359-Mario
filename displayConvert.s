@@ -12,7 +12,7 @@ bl displayCheck
 cmp r0, #1			//check if object can be drawn
 bne notOnScreen	// if not, branch to notOnScreen
 
-mov r4, =Screen_loc
+ldr r4, =Screen_loc
 ldr r8, [r4], #4	//load left x of screen
 ldr r9, [r4]		//laod right x of screen
 
