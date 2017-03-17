@@ -16,7 +16,7 @@ r8 .req	screenXLeft
 r9 .req	screenXRight
 
 
-mov r5, =Screen_loc
+ldr r5, =Screen_loc
 bl Grab
 
 ldr screenXLeft,	[r5], #4
