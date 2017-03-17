@@ -1,4 +1,4 @@
-
+//takes coordinates of top left point and bottom right point as arguments in r0 to r3
 .globl	displayConvert
 
 displayConvert:
