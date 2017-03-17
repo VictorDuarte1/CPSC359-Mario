@@ -52,6 +52,7 @@ init_Objects:   push    {r0 - r10}
 
 
 //Object codes are as follows:
+//MarioTemp 00000
 //Mario 00001
 //Goomba 00010
 //Question Box 00011
@@ -65,9 +66,12 @@ init_Objects:   push    {r0 - r10}
 
 
 
-//r0 = the nubmer code of the object you want
-//r1 = address of object
+//r1 = the nubmer code of the object you want
+//r0 = address of object
 Grab:           push    {r2 - r10}
+                cmp     r1,     #0b00000
+                ldr     r0,     =Mario_Temp
+                beq     endGrab
                 cmp     r1,     #0b00001
                 ldr     r0,     =Mario_loc
                 beq     endGrab
@@ -100,6 +104,36 @@ Grab:           push    {r2 - r10}
 endGrab:        pop     {r2 - r10}
                 bx      lr
 
+GrabImage:      push    {r2 - r10}
+                cmp     r1,     #0b00010
+                ldr     r0,     =GoombaImage
+                beq     endGrab
+                cmp     r1,     #0b00011
+                ldr     r0,     =Question1Image
+                beq     endGrab
+                cmp     r1,     #0b00100
+                ldr     r0,     =BrickBoxImage
+                beq     endGrab
+                cmp     r1,     #0b00101
+                ldr     r0,     =BrickBoxImage
+                beq     endGrab
+                cmp     r1,     #0b00110
+                ldr     r0,     =BrickBoxImage
+                beq     endGrab
+                cmp     r1,     #0b00111
+                ldr     r0,     =BrickBoxImage
+                beq     endGrab
+                cmp     r1,     #0b01000
+                ldr     r0,     =PipeImage
+                beq     endGrab
+                cmp     r1,     #0b01001
+                ldr     r0,     =HoleImage
+                beq     endGrab
+                mov     r0,     #-1
+
+endGrab:        pop     {r2 - r10}
+                bx      lr
+
 
 Grab_Screen:    ldr     r0,     Screen_loc
 
@@ -110,7 +144,17 @@ Grab_Screen:    ldr     r0,     Screen_loc
 
 
 .data
+Mario_Temp:     int.    0               //Point 1 - top left corner
+                int.    150
 
+                int.    50               //point 2 - Top right corner
+                int.    150
+                
+                int.    0               //Point 3 - bottom left corner
+                int.    50
+
+                int.    50               //Point 4 - bottom right corner
+                int.    50
 Mario_loc:      int.    0               //Point 1 - top left corner
                 int.    150
 
