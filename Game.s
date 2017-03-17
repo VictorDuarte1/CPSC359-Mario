@@ -1,4 +1,4 @@
-//Game Starts here
+///Game Starts here
 
 	.equ	SEL, 0b110111111111
 	.equ	START, 0b111011111111
@@ -8,7 +8,9 @@
 	.equ	RIGHT, 0b111111101111
 	.equ	A, 0b111111110111
 BeginGame:
-	        BUTTON .req r6		// contains the button pressed
+                bl      init_Objects	        
+                BUTTON  .req r6		// contains the button pressed
+                JUMP    .req r7         // detects if jump is over.
                 mov	r0, #0		// initial x
 	        mov	r1, #0		// initial y
 	        ldr	r2, =1023	// final x
@@ -104,6 +106,7 @@ EndPOLoop:      pop     {r4,    r10,    lr}
 
 //====================================================
 //Draws objects that are on the screen other than mario
+//Requires Converter NOT DONE
 PrintObjects:   push    {r4,    r10, lr}
                 mov     r4,     #1
 POLoop:         add     r4,     #1
@@ -160,6 +163,7 @@ MarioPrint:    push    {r4,    r10, lr}
 
                 //Branch and link to Victor's converter        
                 //needs to provide two coordinates 
+
                 bl convertor
 	        mov     r4,     r10
 	        bl	CreateImage
@@ -168,7 +172,7 @@ EndMarioPrint:  pop     {r4,    r10, lr}
                 bx      lr
 
 //====================================================
-
+//Prints sky over mario
 EraseMario:     push    {r2,    r10, lr}
                 mov     r0,     #0b00001
                 bl      Grab
@@ -180,6 +184,7 @@ EraseMario:     push    {r2,    r10, lr}
 
                 //Branch and link to Victor's converter        
                 //needs to provide two coordinates 
+
                 bl convertor
 	        ldr     r4,     =blank
 	        bl	CreateImage
@@ -201,11 +206,13 @@ Checktime:      ldr     r2,     [r0]                    //loop that decides if t
                 bx      lr
 //===================================================
 //Takes in the direction to move in r1
+//Needs to take in if jump is true or not in r2 NOT DONE
 MoveMarioLR:
                 push    {r2,    r10,    lr}
                 bl      EraseMario
-                mov     r0,     #0b00001
-                mov     r4,     r1
+                mov     r0,     #0b00000
+                mov     r4,     r1              //put the direction value in a safe place
+                mov     r8,     r2              //put the jump state in a safe place
                 bl      Grab
                 mov     r5,     r0
                 ldr     r0,     [r5]
@@ -223,21 +230,40 @@ MoveMarioLR:
                 //Check for collision and undo movement if so
                 bl      objectCollision
                 cmp     r0,     #0
-                bgt     nocol1
+                beq     nocol1
                 mov     r1,     r4
                 mov     r2,     r0
                 bl      CollisionHandler
                 b       EndMoveMario
                 
-nocol1          cmp     r4,     #0
+
+nocol1          
+                mov     r0,     #0b00001
+                mov     r4,     r1              //put the direction value in a safe place
+                mov     r8,     r2              //put the jump state in a safe place
+                bl      Grab
+                mov     r5,     r0
+                ldr     r0,     [r5]
+                add     r0,     r0,     r4
+                str     r0,     [r5],   #8
+                ldr     r1,     [r5]
+                add     r1,     r1,     r4
+                str     r1,     [r5],   #8
+                ldr     r2,     [r5]
+                add     r2,     r2,     r4
+                str     r2,     [r5],   #8
+                ldr     r3,     [r5]
+                add     r3,     r3,     r4
+                str     r3,     [r5],   #8
+                cmp     r4,     #0
                 b.lt    WalkLeft
                 ldr     r1,     =MarioWalkRImg
                 b       MoveMario2
 WalkLeft:       ldr     r1,     =MarioWalkLImg
 MoveMario2      bl      MarioPrint
-                mov     r1,     #50
+
                 bl      EraseMario
-                mov     r0,     #0b00001
+                mov     r0,     #0b00000
                 bl      Grab
                 mov     r5,     r0
                 ldr     r1,     [r5]
@@ -255,11 +281,29 @@ MoveMario2      bl      MarioPrint
 
                 bl      objectCollision
                 cmp     r0,     #0
-                bgt     nocol1
+                beq     nocol2
                 mov     r1,     r4
                 mov     r2,     r0
                 bl      CollisionHandler
                 b       EndMoveMario
+
+nocol2:         mov     r0,     #0b00001
+                mov     r4,     r1              //put the direction value in a safe place
+                mov     r8,     r2              //put the jump state in a safe place
+                bl      Grab
+                mov     r5,     r0
+                ldr     r0,     [r5]
+                add     r0,     r0,     r4
+                str     r0,     [r5],   #8
+                ldr     r1,     [r5]
+                add     r1,     r1,     r4
+                str     r1,     [r5],   #8
+                ldr     r2,     [r5]
+                add     r2,     r2,     r4
+                str     r2,     [r5],   #8
+                ldr     r3,     [r5]
+                add     r3,     r3,     r4
+                str     r3,     [r5],   #8
 EndMoveMarioLR:
                 cmp     r4,     #0
                 b.lt    WalkLeft
@@ -273,10 +317,37 @@ EndMoveMarioLR:
 //===================================================
 //Marios movement value in r1
 //Object collided with in r2
+//This method should check what kind of collision has occured. If it is with a question box,
+//the question box needs to change to a brick box and mario is pushed back to his old location
+//If it is with a brick then mario is moved back his movement amount. If it is with a goomba, 
+//from the side, mario dies. If it is with a goomba from above, Mario kills the goomba, if it
+//is a collision with ground, Mario is not moved NOT DONE
 CollisionHandler:
                 push    {r2,    r10,    lr}
                 pop     {r4,    r10,    lr}
                 bx      lr
+
+
+
+//===================================================
+//Not Done
+MarioJump:
+
+
+
+//===================================================
+//Takes in an input that tells whether jump is true or not. If jump is false then mario can fall. If
+//Jump is true then mario will not fall. r0 = 1 is jump true, r0 = 0 is jump is false NOT DONE
+MarioFall:
+
+
+
+
+
+
+
+
+
 
 
 
