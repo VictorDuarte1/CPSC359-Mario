@@ -3,30 +3,27 @@
 
 displayCheck:
 
-push (r4-r9, lr)
+push {r4-r9, lr}
 
 //argument in r0, code for object to check if in range
 bl Grab
 x1 .req r0		//x of top left
 y1 .req r1		//y of top left
-x2	.req r2		//x of top right
-y2 .req r3		//y of top right
-x3 .req r4		//x of bottom left
-y3 .req r5		//y of bottom left
-x4 .req r6		//x of bottom right
-y4 .req r7		//y of bottom right
+
+x4 .req r2		//x of bottom right
+y4 .req r3		//y of bottom right
 
 r8 .req	screenXLeft
 r9 .req	screenXRight
 
 
-mov r2, //code for screen edges
+mov r5, =Screen_loc
 bl Grab
 
-mov screenXLeft,	//value of left edge of screen
-mov screenXRight, //value of right edge of screen
+ldr screenXLeft,	[r5], #4
+ldr screenXRight, [r5]
 
-cmp x2, screenXLeft
+cmp x4, screenXLeft
 blt	notAllowed			//check if right x value of object is on left side of the left edge
 
 cmp x1, screenXRight
