@@ -3,7 +3,7 @@
 .globl	objectCollision
 objectCollision:
 
-push	(r4-r10,lr)
+push	{r4-r10,lr}
 
 mov r1, #0b00001
 //load values of mario into respective registers
@@ -100,5 +100,5 @@ next:
 	
 exit:
 
-	pop (r4-r10,lr)
+	pop {r4-r10,lr}
 	bx		lr
