@@ -3,6 +3,8 @@
 .globl Screen_loc
 .globl init_Objects
 .globl GrabImage
+
+
 //Initialize Mario and Goomba to gamestart locations
 init_Objects:   push    {r0 - r10}
                 ldr     r0,     =Mario_loc
@@ -40,6 +42,7 @@ init_Objects:   push    {r0 - r10}
                 mov     r1,     #2672
                 str     r1,     [r0], #4
                 movw     r1,     #718
+            
                 str     r1,     [r0], #4
 
                 //Initialize Screen
@@ -139,6 +142,7 @@ endGrabImage:        pop     {r2 - r10}
 
 
 Grab_Screen:    ldr     r0,    =Screen_loc
+
 
 
 //Assumes that game starts at exactly one brick box above the screen size
